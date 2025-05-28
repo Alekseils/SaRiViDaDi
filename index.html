@@ -1,0 +1,1098 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Чамачечие - волшебная пятерка</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
+    <style>
+        :root {
+            --pink: #ff9bb3;
+            --purple: #d9a3ff;
+            --blue: #a3d8ff;
+            --yellow: #fff6a3;
+            --green: #b3ffa3;
+            --dark: #5a3d7a;
+            --light: #fff9fc;
+            --red: #ff6b6b;
+            --orange: #ffa502;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Comic Sans MS', cursive, sans-serif;
+        }
+
+        body {
+            background-color: var(--light);
+            color: var(--dark);
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        /* Эффект падающих цветов */
+        #flower-rain {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        .flower {
+            position: absolute;
+            font-size: 1.5rem;
+            animation: falling linear infinite;
+            opacity: 0.7;
+        }
+
+        @keyframes falling {
+            0% {
+                transform: translateY(-100px) rotate(0deg);
+                opacity: 0;
+            }
+            10% {
+                opacity: 1;
+            }
+            90% {
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(calc(100vh + 100px)) rotate(360deg);
+                opacity: 0;
+            }
+        }
+
+        /* Следы курсора */
+        .cursor-trail {
+            position: fixed;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 9999;
+            mix-blend-mode: multiply;
+            transform: translate(-50%, -50%);
+        }
+
+        /* Кнопка вверх */
+        #scroll-top {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(45deg, var(--pink), var(--purple));
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 1.5rem;
+            cursor: pointer;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            transition: all 0.3s;
+            z-index: 99;
+        }
+
+        #scroll-top:hover {
+            transform: translateY(-5px) scale(1.1);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.3);
+        }
+
+        #scroll-top.hidden {
+            opacity: 0;
+            transform: translateY(20px);
+            pointer-events: none;
+        }
+
+        /* Шапка */
+        header {
+            background: linear-gradient(45deg, var(--pink), var(--purple));
+            padding: 3rem 2rem;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+            clip-path: polygon(0 0, 100% 0, 100% 90%, 0 100%);
+            margin-bottom: -3rem;
+        }
+
+        h1 {
+            font-size: 4rem;
+            color: white;
+            text-shadow: 3px 3px 0 var(--dark);
+            margin-bottom: 1rem;
+            position: relative;
+            z-index: 2;
+            transform: scale(1);
+            transition: transform 0.3s;
+        }
+
+        h1:hover {
+            transform: scale(1.05);
+        }
+
+        .subtitle {
+            font-size: 1.8rem;
+            color: white;
+            text-shadow: 2px 2px 0 var(--dark);
+            position: relative;
+            z-index: 2;
+            margin-bottom: 1rem;
+        }
+
+        .header-decoration {
+            position: absolute;
+            font-size: 6rem;
+            opacity: 0.2;
+            color: white;
+            z-index: 1;
+            animation: float 6s ease-in-out infinite;
+        }
+
+        .decoration-1 { top: 10%; left: 5%; transform: rotate(-15deg); animation-delay: 0s; }
+        .decoration-2 { top: 20%; right: 10%; transform: rotate(10deg); animation-delay: 1s; }
+        .decoration-3 { bottom: 15%; left: 15%; transform: rotate(5deg); animation-delay: 2s; }
+        .decoration-4 { bottom: 5%; right: 20%; transform: rotate(-10deg); animation-delay: 3s; }
+
+        /* Блестки */
+        .sparkles {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .sparkle {
+            position: absolute;
+            width: 5px;
+            height: 5px;
+            background-color: white;
+            border-radius: 50%;
+            opacity: 0;
+            animation: sparkle 2s infinite;
+        }
+
+        @keyframes sparkle {
+            0% {
+                transform: scale(0);
+                opacity: 0;
+            }
+            50% {
+                transform: scale(1);
+                opacity: 0.8;
+            }
+            100% {
+                transform: scale(0);
+                opacity: 0;
+            }
+        }
+
+        /* Навигация */
+        nav {
+            background-color: var(--dark);
+            padding: 1.5rem;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+        nav ul {
+            display: flex;
+            justify-content: center;
+            list-style: none;
+            gap: 2rem;
+            flex-wrap: wrap;
+        }
+
+        nav a {
+            color: white;
+            text-decoration: none;
+            font-size: 1.2rem;
+            padding: 0.7rem 1.5rem;
+            border-radius: 30px;
+            transition: all 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        nav a::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: all 0.5s;
+        }
+
+        nav a:hover {
+            background-color: var(--pink);
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+        nav a:hover::before {
+            left: 100%;
+        }
+
+        /* Основной контент */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        section {
+            margin-bottom: 4rem;
+            padding: 3rem;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+            position: relative;
+            overflow: hidden;
+            background-color: white;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        section:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.1);
+        }
+
+        section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 8px;
+            background: linear-gradient(90deg, var(--pink), var(--purple), var(--blue), var(--yellow), var(--green));
+        }
+
+        h2 {
+            font-size: 2.8rem;
+            margin-bottom: 2rem;
+            color: var(--dark);
+            text-align: center;
+            position: relative;
+            padding-bottom: 1rem;
+        }
+
+        h2::after {
+            content: '';
+            display: block;
+            width: 150px;
+            height: 5px;
+            background: linear-gradient(90deg, var(--pink), var(--purple));
+            margin: 1rem auto;
+            border-radius: 5px;
+        }
+
+        /* Секция "О нас" */
+        .about-content {
+            display: flex;
+            gap: 3rem;
+            align-items: center;
+        }
+
+        .about-text {
+            flex: 1;
+            font-size: 1.1rem;
+            line-height: 1.8;
+        }
+
+        .about-text p {
+            margin-bottom: 1.5rem;
+        }
+
+        .motto {
+            font-weight: bold;
+            color: var(--purple);
+            font-size: 1.3rem;
+            display: inline-block;
+            transform: rotate(-2deg);
+        }
+
+        .about-decoration {
+            flex: 0 0 300px;
+            position: relative;
+            height: 300px;
+        }
+
+        .floating-heart, .floating-star {
+            position: absolute;
+            font-size: 5rem;
+            animation: float 4s ease-in-out infinite;
+        }
+
+        .floating-heart {
+            top: 20%;
+            left: 30%;
+            color: var(--pink);
+            animation-delay: 0.5s;
+        }
+
+        .floating-star {
+            top: 60%;
+            left: 50%;
+            color: var(--yellow);
+        }
+
+        /* Участницы */
+        .members-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 3rem;
+            margin-top: 3rem;
+        }
+
+        .member-card {
+            background-color: white;
+            border-radius: 20px;
+            padding: 2rem;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+            transition: all 0.5s;
+            position: relative;
+            overflow: hidden;
+            border: 1px solid rgba(0,0,0,0.05);
+        }
+
+        .member-card:hover {
+            transform: translateY(-15px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+        }
+
+        .member-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 8px;
+        }
+
+        .member-card:nth-child(1)::before { background-color: var(--pink); }
+        .member-card:nth-child(2)::before { background-color: var(--purple); }
+        .member-card:nth-child(3)::before { background-color: var(--blue); }
+        .member-card:nth-child(4)::before { background-color: var(--yellow); }
+        .member-card:nth-child(5)::before { background-color: var(--green); }
+
+        .member-avatar {
+            font-size: 4rem;
+            margin-bottom: 1.5rem;
+            transition: transform 0.3s;
+        }
+
+        .member-card:hover .member-avatar {
+            transform: scale(1.2) rotate(15deg);
+        }
+
+        .member-name {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+            color: var(--dark);
+            position: relative;
+            display: inline-block;
+        }
+
+        .member-name::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background: linear-gradient(90deg, var(--pink), var(--purple));
+            transform: scaleX(0);
+            transform-origin: right;
+            transition: transform 0.3s ease-in-out;
+        }
+
+        .member-card:hover .member-name::after {
+            transform: scaleX(1);
+            transform-origin: left;
+        }
+
+        .member-role {
+            font-size: 1.3rem;
+            color: var(--pink);
+            margin-bottom: 1.5rem;
+            font-weight: bold;
+        }
+
+        .member-description {
+            font-size: 1.1rem;
+            line-height: 1.6;
+            color: #666;
+        }
+
+        .member-hover-effect {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at center, rgba(255,255,255,0.8) 0%, rgba(255,255,255,0) 70%);
+            opacity: 0;
+            transition: opacity 0.3s;
+            pointer-events: none;
+        }
+
+        .member-card:hover .member-hover-effect {
+            opacity: 1;
+        }
+
+        /* Галерея */
+        .gallery-container {
+            position: relative;
+            margin: 2rem 0;
+            overflow: hidden;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+
+        .gallery-slider {
+            display: flex;
+            transition: transform 0.5s ease-in-out;
+        }
+
+        .gallery-item {
+            min-width: 100%;
+            height: 400px;
+            background-color: #f8f8f8;
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 8rem;
+            color: var(--dark);
+            transition: all 0.5s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .gallery-item::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(45deg, rgba(255,150,179,0.3), rgba(217,163,255,0.3));
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .gallery-item:hover::before {
+            opacity: 1;
+        }
+
+        .gallery-item.active {
+            transform: scale(1.02);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+
+        .gallery-controls {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .gallery-controls button {
+            background: linear-gradient(45deg, var(--pink), var(--purple));
+            color: white;
+            border: none;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            font-size: 1.5rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .gallery-controls button:hover {
+            transform: scale(1.1);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+        .gallery-dots {
+            display: flex;
+            justify-content: center;
+            gap: 0.5rem;
+            margin-top: 1rem;
+        }
+
+        .gallery-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background-color: #ddd;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .gallery-dot.active {
+            background: linear-gradient(45deg, var(--pink), var(--purple));
+            transform: scale(1.2);
+        }
+
+        /* Контакты */
+        .contact-wrapper {
+            display: flex;
+            gap: 3rem;
+            margin-top: 2rem;
+        }
+
+        .contact-form {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        label {
+            font-size: 1.2rem;
+            color: var(--dark);
+            font-weight: bold;
+        }
+
+        input, textarea {
+            padding: 1rem;
+            border: 2px solid #eee;
+            border-radius: 15px;
+            font-size: 1.1rem;
+            transition: all 0.3s;
+            background-color: #fafafa;
+        }
+
+        input:focus, textarea:focus {
+            border-color: var(--pink);
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(255, 102, 178, 0.2);
+            background-color: white;
+        }
+
+        textarea {
+            min-height: 200px;
+            resize: vertical;
+        }
+
+        button[type="submit"] {
+            background: linear-gradient(45deg, var(--pink), var(--purple));
+            color: white;
+            border: none;
+            padding: 1.2rem 2.5rem;
+            font-size: 1.3rem;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-top: 1rem;
+            align-self: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        button[type="submit"]::after {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -60%;
+            width: 50px;
+            height: 200%;
+            background: rgba(255,255,255,0.2);
+            transform: rotate(30deg);
+            transition: all 0.5s;
+        }
+
+        button[type="submit"]:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(0,0,0,0.1);
+            background: linear-gradient(45deg, var(--purple), var(--pink));
+        }
+
+        button[type="submit"]:hover::after {
+            left: 120%;
+        }
+
+        .contact-info {
+            flex: 0 0 300px;
+            background: linear-gradient(45deg, #f8f8f8, white);
+            padding: 2rem;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .contact-info h3 {
+            font-size: 1.8rem;
+            margin-bottom: 1.5rem;
+            color: var(--dark);
+            text-align: center;
+        }
+
+        .social-buttons {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .social-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 1rem;
+            border-radius: 10px;
+            color: white;
+            font-weight: bold;
+            text-decoration: none;
+            transition: all 0.3s;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .social-btn:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+        }
+
+        .instagram { background: linear-gradient(45deg, #833ab4, #fd1d1d, #fcb045); }
+        .tiktok { background: linear-gradient(45deg, #010101, #69c9d0, #ee1d52); }
+        .vk { background: linear-gradient(45deg, #4a76a8, #5b88bd); }
+        .telegram { background: linear-gradient(45deg, #0088cc, #34aadc); }
+
+        .floating-emoji {
+            position: absolute;
+            font-size: 3rem;
+            opacity: 0.2;
+            animation: float 5s ease-in-out infinite;
+        }
+
+        .contact-decoration .floating-emoji:nth-child(1) {
+            top: 20%;
+            right: 10%;
+            animation-delay: 0.5s;
+        }
+
+        .contact-decoration .floating-emoji:nth-child(2) {
+            bottom: 15%;
+            left: 10%;
+            animation-delay: 1s;
+        }
+
+        /* Подвал */
+        footer {
+            background: linear-gradient(45deg, var(--dark), #3a2a4a);
+            color: white;
+            padding: 4rem 2rem 2rem;
+            margin-top: 4rem;
+            clip-path: polygon(0 10%, 100% 0, 100% 100%, 0 100%);
+            position: relative;
+        }
+
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 2rem;
+        }
+
+        .footer-logo {
+            font-size: 2rem;
+            font-weight: bold;
+            margin-bottom: 1rem;
+            color: var(--pink);
+        }
+
+        .footer-links {
+            display: flex;
+            flex-direction: column;
+            gap: 0.8rem;
+        }
+
+        .footer-links a {
+            color: white;
+            text-decoration: none;
+            transition: all 0.3s;
+        }
+
+        .footer-links a:hover {
+            color: var(--pink);
+            transform: translateX(5px);
+        }
+
+        .footer-social {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .social-icon {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background-color: rgba(255,255,255,0.1);
+            color: white;
+            font-size: 1.5rem;
+            transition: all 0.3s;
+            text-decoration: none;
+        }
+
+        .social-icon:hover {
+            background-color: var(--pink);
+            transform: scale(1.1) rotate(10deg);
+        }
+
+        .footer-bottom {
+            max-width: 1200px;
+            margin: 3rem auto 0;
+            text-align: center;
+            padding-top: 2rem;
+            border-top: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .footer-bottom p {
+            margin-bottom: 0.5rem;
+            font-size: 0.9rem;
+            opacity: 0.8;
+        }
+
+        /* Фейерверк */
+        .firework {
+            position: absolute;
+            width: 5px;
+            height: 5px;
+            border-radius: 50%;
+            box-shadow: 0 0 10px 2px;
+            animation: firework-animation 1s ease-out forwards;
+            opacity: 0;
+        }
+
+        @keyframes firework-animation {
+            0% {
+                transform: translate(var(--x), var(--y));
+                width: 5px;
+                height: 5px;
+                opacity: 1;
+            }
+            100% {
+                transform: translate(var(--x), var(--y)) scale(0);
+                opacity: 0;
+            }
+        }
+
+        /* Анимации */
+        @keyframes float {
+            0%, 100% { transform: translateY(0) rotate(0deg); }
+            50% { transform: translateY(-20px) rotate(5deg); }
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-15px); }
+        }
+
+        /* Мобильная адаптация */
+        @media (max-width: 992px) {
+            .about-content {
+                flex-direction: column;
+            }
+            
+            .about-decoration {
+                margin-top: 2rem;
+            }
+            
+            .contact-wrapper {
+                flex-direction: column;
+            }
+            
+            .contact-info {
+                margin-top: 2rem;
+            }
+        }
+
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2.5rem;
+            }
+            
+            .subtitle {
+                font-size: 1.3rem;
+            }
+            
+            nav ul {
+                flex-direction: column;
+                align-items: center;
+                gap: 0.5rem;
+            }
+            
+            section {
+                padding: 2rem 1.5rem;
+            }
+            
+            .members-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .gallery-item {
+                height: 300px;
+                font-size: 5rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            h1 {
+                font-size: 2rem;
+            }
+            
+            h2 {
+                font-size: 1.8rem;
+            }
+            
+            .member-name {
+                font-size: 1.5rem;
+            }
+            
+            .member-role {
+                font-size: 1.1rem;
+            }
+            
+            .member-description {
+                font-size: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Эффект падающих цветов -->
+    <div id="flower-rain"></div>
+    
+    <!-- Эффект следов от курсора -->
+    <div id="cursor-trail"></div>
+    
+    <!-- Кнопка вверх -->
+    <div id="scroll-top" class="hidden">↑</div>
+    
+    <header>
+        <div class="header-decoration decoration-1">✿</div>
+        <div class="header-decoration decoration-2">♡</div>
+        <div class="header-decoration decoration-3">✧</div>
+        <div class="header-decoration decoration-4">☽</div>
+        
+        <h1 class="animate__animated animate__bounceIn">Чамачечие</h1>
+        <p class="subtitle animate__animated animate__fadeInUp animate__delay-1s">Волшебная пятерка, создающая магию каждый день</p>
+        
+        <!-- Анимированные блестки -->
+        <div class="sparkles"></div>
+    </header>
+    
+    <nav>
+        <ul>
+            <li><a href="#about" class="nav-link">О нас</a></li>
+            <li><a href="#members" class="nav-link">Участницы</a></li>
+            <li><a href="#gallery" class="nav-link">Галерея</a></li>
+            <li><a href="#contact" class="nav-link">Контакты</a></li>
+        </ul>
+    </nav>
+    
+    <div class="container">
+        <section id="about" class="animate__animated">
+            <h2>О нашей группе</h2>
+            <div class="about-content">
+                <div class="about-text">
+                    <p>Мы - "Чамачечие", группа из пяти невероятных девушек, которые превращают обычные дни в волшебные приключения. Наша дружба - это смесь смеха, поддержки и бесконечного вдохновения.</p>
+                    <p>Вместе мы создаем уникальные проекты, поддерживаем друг друга в любых начинаниях и доказываем, что женская дружба может быть крепкой, искренней и полной веселья.</p>
+                    <p>Наш девиз: <span class="motto">"Пять сердец - один ритм!"</span></p>
+                </div>
+                <div class="about-decoration">
+                    <div class="floating-heart">❤️</div>
+                    <div class="floating-star">⭐</div>
+                </div>
+            </div>
+        </section>
+        
+        <section id="members">
+            <h2>Наша волшебная пятерка</h2>
+            <div class="members-grid">
+                <div class="member-card floating">
+                    <div class="member-avatar">🌸</div>
+                    <h3 class="member-name">Даша</h3>
+                    <p class="member-role">Мечтательница</p>
+                    <p class="member-description">Генератор идей и вдохновения группы. Всегда знает, как превратить обычный день в приключение. Ее воображение не знает границ!</p>
+                    <div class="member-hover-effect"></div>
+                </div>
+                
+                <div class="member-card floating">
+                    <div class="member-avatar">⚡</div>
+                    <h3 class="member-name">Саша</h3>
+                    <p class="member-role">Энерджайзер</p>
+                    <p class="member-description">Источник бесконечной энергии и позитива. Ни одно мероприятие не проходит без ее зажигательного настроения!</p>
+                    <div class="member-hover-effect"></div>
+                </div>
+                
+                <div class="member-card floating">
+                    <div class="member-avatar">📚</div>
+                    <h3 class="member-name">Виолетта</h3>
+                    <p class="member-role">Мудрец</p>
+                    <p class="member-description">Самый рассудительный член группы. Всегда найдет решение в сложной ситуации и даст мудрый совет.</p>
+                    <div class="member-hover-effect"></div>
+                </div>
+                
+                <div class="member-card floating">
+                    <div class="member-avatar">🎨</div>
+                    <h3 class="member-name">Диана</h3>
+                    <p class="member-role">Творческая душа</p>
+                    <p class="member-description">Художница, музыкант и поэтесса в одном лице. Оживляет наши идеи своими творческими талантами.</p>
+                    <div class="member-hover-effect"></div>
+                </div>
+                
+                <div class="member-card floating">
+                    <div class="member-avatar">📋</div>
+                    <h3 class="member-name">Рита</h3>
+                    <p class="member-role">Организатор</p>
+                    <p class="member-description">Мастер планирования и логистики. Благодаря ей все наши встречи проходят идеально и без накладок.</p>
+                    <div class="member-hover-effect"></div>
+                </div>
+            </div>
+        </section>
+        
+        <section id="gallery">
+            <h2>Наши волшебные моменты</h2>
+            <div class="gallery-controls">
+                <button id="prev-btn">←</button>
+                <button id="next-btn">→</button>
+            </div>
+            <div class="gallery-container">
+                <div class="gallery-slider">
+                    <div class="gallery-item active">💫</div>
+                    <div class="gallery-item">🌸</div>
+                    <div class="gallery-item">🎀</div>
+                    <div class="gallery-item">🍭</div>
+                    <div class="gallery-item">🌈</div>
+                    <div class="gallery-item">🎨</div>
+                    <div class="gallery-item">🎤</div>
+                    <div class="gallery-item">🎉</div>
+                </div>
+            </div>
+            <div class="gallery-dots"></div>
+        </section>
+        
+        <section id="contact">
+            <h2>Свяжитесь с нами</h2>
+            <div class="contact-wrapper">
+                <form class="contact-form" id="contactForm">
+                    <div class="form-group">
+                        <label for="name">Ваше имя</label>
+                        <input type="text" id="name" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="email">Ваш email</label>
+                        <input type="email" id="email" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="message">Ваше сообщение</label>
+                        <textarea id="message" required></textarea>
+                    </div>
+                    
+                    <button type="submit">Отправить волшебство ✨</button>
+                </form>
+                
+                <div class="contact-info">
+                    <h3>Наши соцсети</h3>
+                    <div class="social-buttons">
+                        <a href="#" class="social-btn instagram">Instagram</a>
+                        <a href="#" class="social-btn tiktok">TikTok</a>
+                        <a href="#" class="social-btn vk">VK</a>
+                        <a href="#" class="social-btn telegram">Telegram</a>
+                    </div>
+                    
+                    <div class="contact-decoration">
+                        <div class="floating-emoji">💌</div>
+                        <div class="floating-emoji">📱</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+    
+    <footer>
+        <div class="footer-content">
+            <div class="footer-logo">Чамачечие</div>
+            <div class="footer-links">
+                <a href="#about">О нас</a>
+                <a href="#members">Участницы</a>
+                <a href="#gallery">Галерея</a>
+                <a href="#contact">Контакты</a>
+            </div>
+            <div class="footer-social">
+                <a href="#" class="social-icon">📷</a>
+                <a href="#" class="social-icon">🎵</a>
+                <a href="#" class="social-icon">📘</a>
+                <a href="#" class="social-icon">✈️</a>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>© 2023 Чамачечие. Все права защищены волшебством.</p>
+            <p>Создано с любовью и магией</p>
+        </div>
+        
+        <!-- Фейерверк при загрузке страницы -->
+        <div id="page-load-fireworks"></div>
+    </footer>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Эффект следов от курсора
+            const cursorTrail = document.getElementById('cursor-trail');
+            const colors = ['#ff9bb3', '#d9a3ff', '#a3d8ff', '#fff6a3', '#b3ffa3'];
+            let trailElements = [];
+            let lastX = 0;
+            let lastY = 0;
+            let mouseMoved = false;
+            
+            // Создаем 15 следов
+            for (let i = 0; i < 15; i++) {
+                let trail = document.createElement('div');
+                trail.className = 'cursor-trail';
+                trail.style.backgroundColor = colors[i % colors.length];
+                trail.style.opacity = (15 - i) / 15;
+                trail.style.width = (25 - i) + 'px';
+                trail.style.height = (25 - i) + 'px';
+                document.body.appendChild(trail);
+                trailElements.push(trail);
+            }
+            
+            document.addEventListener('mousemove', function(e) {
+                lastX = e.clientX;
+                lastY = e.clientY;
+                
+                if (!mouseMoved) {
+                    mouseMoved = true;
